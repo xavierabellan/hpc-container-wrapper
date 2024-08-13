@@ -8,6 +8,9 @@ sys.path.insert(0,str(root_dir))
 sys.path.insert(0,str(root_dir)+"/PyDeps/lib/python{}.{}/site-packages".format(info[0],info[1]))
 import yaml
 from cw_common import *
+
+default_tykky_path=os.path.join(os.getenv("HOME"),".tykky")
+
 def is_valid_file(par,arg):
     if not os.path.exists(arg):
         print_err("The file %s does not exist!" % arg)
@@ -16,7 +19,9 @@ def is_valid_file(par,arg):
         return arg  
 
 def add_prefix_flag(p):
-    p.add_argument("--prefix",type=str,help="Installation location")
+    p.add_argument("-p","--prefix",type=str,help="Installation location")
+def add_envname_flag(p):
+    p.add_argument("-n","--name",type=str,help="Environment name")
 
 def add_post_flag(par):
     par.add_argument("--post-install",help="Script to run after initial setup",type=lambda x: is_valid_file(par,x))
@@ -38,7 +43,9 @@ def add_upd_pars(subpar):
     return parser_update
 def add_new_pars(subpar):
     parser_new = subpar.add_parser('new', help='Create new installation')
-    add_prefix_flag(parser_new)
+    inst_dir_group = parser_new.add_mutually_exclusive_group(required=True)
+    add_prefix_flag(inst_dir_group)
+    add_envname_flag(inst_dir_group)
     return parser_new
 def add_base_pars(par,pre_post=True):
     if pre_post:

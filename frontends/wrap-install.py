@@ -16,7 +16,9 @@ parser = argparse.ArgumentParser(description="Wrap an existing installation into
 parser.add_argument("dir",type=str,help="Installation to wrap")
 add_base_pars(parser)
 
-add_prefix_flag(parser)
+inst_dir_group = parser.add_mutually_exclusive_group(required=True)
+add_prefix_flag(inst_dir_group)
+add_envname_flag(inst_dir_group)
 parser.add_argument("-y","--yaml",help="Tool yaml conf file")
 parser.add_argument("--mask",action='store_true',help="Mask installation on disk")
 
@@ -44,6 +46,8 @@ if args.mask:
 
 if args.prefix:
     conf["installation_prefix"]=args.prefix
+elif args.name:
+    conf["installation_prefix"]=os.path.join(os.getenv("TYKKY_PATH", default=default_tykky_path).split(":")[0], args.name)
 
 if args.yaml:
     with open(args.yaml,'r') as y:

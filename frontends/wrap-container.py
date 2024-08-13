@@ -33,6 +33,8 @@ conf["isolate"]="yes"
 conf["mode"]="wrapcont"
 if args.prefix:
     conf["installation_prefix"]=args.prefix
+elif args.name:
+    conf["installation_prefix"]=os.path.join(os.getenv("TYKKY_PATH", default=default_tykky_path).split(":")[0], args.name)
 
 if args.yaml:
     with open(args.yaml,'r') as y:

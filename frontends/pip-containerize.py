@@ -47,13 +47,25 @@ if args.command == "new":
         conf["enable_site_packages"]="yes"
     if args.prefix:
         conf["installation_prefix"]=args.prefix
+    elif args.name:
+        conf["installation_prefix"]=os.path.join(os.getenv("TYKKY_PATH", default_tykky_path).split(":")[0], args.name)
     conf["mode"]="venv"
     if args.slim:
         conf["container_src"]="docker://python:{}".format(pyver)
         conf["isolate"]="yes"
 elif args.command == "update":
     conf["mode"]="venv_modify"
-    get_old_conf(args.dir,conf)
+    if "/" in args.dir:
+        get_old_conf(args.dir,conf)
+    else:
+        for p in os.getenv("TYKKY_PATH",default=default_tykky_path).split(":"):
+            candidate=os.path.join(p, args.dir)
+            if os.path.exists(candidate):
+                get_old_conf(candidate,conf)
+                break
+        else:
+            print_err("Env {} not found in {}".format(args.dir, os.getenv("TYKKY_PATH", default_tykky_path)))
+            sys.exit(1)
 else:
     with open(args.yaml,'r') as y:
         conf.update(yaml.safe_load(y))
