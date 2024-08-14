@@ -39,7 +39,7 @@ def add_adv_pars(subpar):
     return parser_advanced
 def add_upd_pars(subpar):
     parser_update = subpar.add_parser('update', help='update an existing installation')
-    parser_update.add_argument('dir', type=str, help='Installation to update')
+    parser_update.add_argument('dir', type=str, help='Installation path or name to update')
     return parser_update
 def add_new_pars(subpar):
     parser_new = subpar.add_parser('new', help='Create new installation')
